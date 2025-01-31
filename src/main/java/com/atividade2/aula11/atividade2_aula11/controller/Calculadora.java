@@ -1,5 +1,7 @@
 package com.atividade2.aula11.atividade2_aula11.controller;
 
+import java.util.Arrays;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,7 +13,7 @@ public class Calculadora {
   @RequestMapping(value = "/soma", method = RequestMethod.GET)
   public double soma(@RequestParam String n1, @RequestParam String n2) throws Exception {
     if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return convertToDouble(n1) + convertToDouble(n2);
@@ -20,7 +22,7 @@ public class Calculadora {
   @RequestMapping(value = "/subtracao", method = RequestMethod.GET)
   public double subtracao(@RequestParam String n1, @RequestParam String n2) throws Exception {
     if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return convertToDouble(n1) - convertToDouble(n2);
@@ -29,7 +31,7 @@ public class Calculadora {
   @RequestMapping(value = "/multiplicacao", method = RequestMethod.GET)
   public double multiplicacao(@RequestParam String n1, @RequestParam String n2) throws Exception {
     if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return convertToDouble(n1) * convertToDouble(n2);
@@ -38,7 +40,7 @@ public class Calculadora {
   @RequestMapping(value = "/divisao", method = RequestMethod.GET)
   public double divisao(@RequestParam String n1, @RequestParam String n2) throws Exception {
     if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return n2.equals("0") ? 0 : convertToDouble(n1) / convertToDouble(n2);
@@ -47,7 +49,7 @@ public class Calculadora {
   @RequestMapping(value = "/radiciacao", method = RequestMethod.GET)
   public double radiciacao(@RequestParam String n1) throws Exception {
     if (!isNumeric(n1)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return Math.sqrt(convertToDouble(n1));
@@ -55,8 +57,8 @@ public class Calculadora {
 
   @RequestMapping(value = "/exponenciacao", method = RequestMethod.GET)
   public double exponenciacao(@RequestParam String n1, @RequestParam String n2) throws Exception {
-    if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+    if (!isNumeric(n1) || !isNumeric(n2) || Double.parseDouble(n2) <= 0) {
+      throw new Exception("Número inválido");
     }
 
     return Math.pow(convertToDouble(n1), convertToDouble(n2));
@@ -65,7 +67,7 @@ public class Calculadora {
   @RequestMapping(value = "/inverso", method = RequestMethod.GET)
   public double inverso(@RequestParam String n1) throws Exception {
     if (!isNumeric(n1)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return n1.equals("0") ? 0 : 1 / convertToDouble(n1);
@@ -74,26 +76,33 @@ public class Calculadora {
   @RequestMapping(value = "/modulo", method = RequestMethod.GET)
   public double modulo(@RequestParam String n1) throws Exception {
     if (!isNumeric(n1)) {
-      throw new Exception();
+      throw new Exception("Número inválido");
     }
 
     return convertToDouble(n1) < 0 ? convertToDouble(n1) * -1 : convertToDouble(n1);
   }
 
   @RequestMapping(value = "/fatorial", method = RequestMethod.GET)
-  public double fatorial(@RequestParam String n1, @RequestParam String n2) throws Exception {
-    if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+  public double fatorial(@RequestParam String n1) throws Exception {
+    if (!isNumeric(n1)) {
+      throw new Exception("Número inválido");
+    }
+    double val = convertToDouble(n1) == 0 ? 1 : convertToDouble(n1);
+    double aux = val;
+
+    while (1 < val) {
+      aux *= (val - 1);
+      val--;
     }
 
-    return n2.equals("0") ? 0 : convertToDouble(n1) / convertToDouble(n2);
+    return aux;
   }
 
   @RequestMapping(value = "/media", method = RequestMethod.GET)
   public double media(@RequestParam String n1, @RequestParam String n2, @RequestParam String n3,
       @RequestParam String n4, @RequestParam String n5) throws Exception {
-    if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+    if (!isNumeric(n1) || !isNumeric(n2) || !isNumeric(n3) || !isNumeric(n4) || !isNumeric(n5)) {
+      throw new Exception("Número inválido");
     }
 
     return (convertToDouble(n1) + convertToDouble(n2) + convertToDouble(n3) + convertToDouble(n4) + convertToDouble(n5))
@@ -101,12 +110,18 @@ public class Calculadora {
   }
 
   @RequestMapping(value = "/mediana", method = RequestMethod.GET)
-  public double mediana(@RequestParam String n1, @RequestParam String n2) throws Exception {
-    if (!isNumeric(n1) || !isNumeric(n2)) {
-      throw new Exception();
+  public double mediana(@RequestParam String n1, @RequestParam String n2, @RequestParam String n3,
+      @RequestParam String n4, @RequestParam String n5) throws Exception {
+    if (!isNumeric(n1) || !isNumeric(n2) || !isNumeric(n3) || !isNumeric(n4) || !isNumeric(n5)) {
+      throw new Exception("Número inválido");
     }
 
-    return n2.equals("0") ? 0 : convertToDouble(n1) / convertToDouble(n2);
+    double[] values = { convertToDouble(n1), convertToDouble(n2), convertToDouble(n3), convertToDouble(n4),
+        convertToDouble(n5) };
+
+    Arrays.sort(values);
+
+    return values[2];
   }
 
   private boolean isNumeric(String strNumber) {
@@ -121,7 +136,7 @@ public class Calculadora {
 
   private double convertToDouble(String strNumber) throws Exception {
     if (strNumber == null)
-      throw new Exception();
+      throw new Exception("Número inválido");
 
     String number = strNumber.replaceAll(",", ".");
 
